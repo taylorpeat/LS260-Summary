@@ -1,0 +1,181 @@
+260
+
+Tools
+
+Backbone
+Window Object
+History Object
+Web Workers
+Bower
+Grunt
+Jasmine
+Express
+Jade
+Stylus
+
+
+Folder Structure
+
+bower_components
+dependencies declared in bower.json
+folders for each dependency
+
+local_modules
+js files you have created with a module.exports.
+Used to import modules to add functionality
+
+node_modules
+modules that come with node or "npm installed" and can be required in code
+
+public - client-side files
+  data - json files etc.
+  images - image files
+  javascripts - client-side javascript files
+application.js - App file which controls other files
+handlebars_templates - handlebars templates which have been precompiled and combined by Grunt
+router.js - Backbone router which works with Backbone.history
+    collections - Backbone collections js files
+    models - Backbone models js files
+    views - Backbone views js files
+    vendor - all.js file which is all the bower dependencies combined by Grunt
+    stylesheets - css files, styl files, css resets
+
+routes - server side routing code
+all.js - file which combines other route files and adds them to a router created with express.Router()
+[otherRoutes].js
+file which defines routes based on url
+can manipulate backend data, decide what to render or send JSON back etc.
+
+views - html/jade files for initial rendering
+      (handlebars used by backbone in lieu of these files for single page applications
+  partials - jade partials or mixins, prepended with _
+
+
+app.js - backend code I don’t understand
+app object is created with express, set views folder, routes folder, whether to use stylus etc.
+
+bower.json - file which contains dependencies to be run by bower and other info
+Gruntfile.js - file containing tasks to be run by grunt like combining bower dependencies into one file, uglifying the file, preprocessing handlebars etc.
+you need to load the tasks which are formatted ‘grunt-contrib-[taskName]’
+grunt.initConfig({
+    taskName: {
+      [code for task]
+    }
+    }
+assign default tasks to be run when grunt is called in terminal
+non-default tasks can be called by 'grunt [taskName]’ in terminal
+
+package.json
+npm thing, created on 'npm init'
+contains list of dependencies for npm to install during ‘npm install’
+can be separated into devDependencies
+`npm install [packageName] -S` saves package name into package.json
+`npm install [packageName] -D` saves package name into package.json as dev dependency
+
+
+
+Backbone
+
+Components
+Models
+Collections
+Views
+Router
+Events
+
+Backbone.[component].extend() for models, collections, views, routers creates a constructor function usually assigned to a variable. The constructor function can then be used to make an instance of that component which can be assigned to a variable with the `new` keyword.
+
+The events component can also be extended onto any object using the underscore library `_.extend([object], Backbone.Events)`
+
+Model
+Backbone.Model.extend({ [model properties] });
+often used with few properties
+properties can be custom methods
+has an attributes property that can be set and retrieved using the `modelName.set()` and `modelName.get()` methods respectively.
+`modelName.toJSON( )` returns an object that has all the attributes properties
+other common properties
+initialize, fetch, destroy, id
+
+Collections
+Backbone.Collection.extend({ [collection properties] });
+a model property is often passed into the constructor when creating an instance.
+constructorName.models returns an array of models contained by the collection
+url: tells the collection where to retrieve the data for the collection from
+fetch: fetches the default set of models and uses the `set` method to merge them to the collection.
+initialize: can be used to set properties passed in which aren’t automatically set `this.url = options.url`
+other common methods
+add, remove, reset, get, set, pop, push, unshift, shift, length, pluck, findWhere
+
+View
+Backbone.View.extend({ [view properties] });
+common properties
+collection: can be passed in as a property and will be automatically assigned
+model: same as collection
+tagName: “[tag]” or leave as default view tag `div`
+id: string that is used as the id on the view tag
+$el: jQuery selection of view element, can be reassigned.
+template, can refer to App.templates.[templateName]
+initialize method: which is called when the constructor is called
+can be used to call render( ) or assign the view to the model `this.model.view = this;`
+render method: assign this.template to this.$el and add to your existing html
+events: object with properties
+property formatted as, “click header a”: “[viewPropertyName]”
+uses first element in a jQuery on method and the second element is the property name used as the callback
+custom properties
+
+Router
+Backbone.Router.extend({ [router properties] });
+provides URL routing/history capabilities
+a router will handle the incoming route value from the URL and invoke a function.
+two ways to go to a route. By invoking it or requesting it.
+you can invoke a route with `routerName.navigate(‘[route name]’);`
+you can request a route by typing the URL into the browser
+Backbone.history listens to the routes and manages history
+common properties
+routes: an object which contains properties with string names representing routes and a callback function on the right
+ie. routes: { “albums/new”: App.newAlbum }
+custom routes can be created with route method.
+ie. `this.route(^\/?$/, “index”, [callbackName]);
+format is route([routing string or regex], [route name], [callback])
+
+Events
+The Backbone object itself works as an event hub which your backbone objects can listen to
+you can provide other objects with this ability with _.extend(object, Backbone.Events)
+methods
+listenTo allows you to listen to a particular event on another object
+`object.listenTo(other, event, callback)` ie. `this.listenTo(this.indexView, “add_to_cart”, this.addCart);
+trigger: triggers the callbacks for a given event
+object.trigger(event, [args])
+on: bind a callback function to an object and event
+works similarly to jQuery on function
+object.on(event, callback)
+other methods: off, stopListening, once, listenOnce
+
+
+Window Object
+
+it is the global scope of client-side javascript
+represents the object containing a DOM document and has methods relating to that object
+useful properties:
+innerWidth, innerHeight, alert, setTimeout
+https://developer.mozilla.org/en-US/docs/Web/API/Window
+
+
+History Object
+
+Window.history returns a reference to the History object
+allows you to access and manipulate the browser’s session history
+has basic navigation controls: history.back(); history.forward(); history.go(2) (moves you forward two steps)
+you can add and modify history entries
+history.pushState(stateObj, “page 2”, “bar.html”)
+pushes a state to the browser which will update the browser URL bar but won’t cause the browser to load that URL
+a state object can be anything that can be serialized. Contains information about the state to be used by the view. Has 640K character size limit.
+history.replaceState(stateObj, “page2”, “bar.html”)
+works the same but instead of adding a state it replaces the existing state.
+
+
+Webworkers
+
+workers can’t access DOM object or global scope
+two types of web workers: Dedicated workers and Shared workers
+create a worker with `var worker = new Worker(“[file name]”);
