@@ -189,6 +189,27 @@ dedicated workers can only be used by the script that called it.
 Shared workers: created using the `new SharedWorker()` constructor
 shared workers can be used by multiple scripts
 shared workers are similar but must be communicated with using a port object
-before messages can be posted to the port it must be started. This is done implicitly by the onmessage function or explicitly by calling `worker.port.start()` (required if you use addEventListener instead of onmessage
+before messages can be posted to the port it must be started (not necessary with dedicated workers). This is done implicitly by the onmessage function or explicitly by calling `worker.port.start()` (required if you use addEventListener instead of onmessage).
 workers can’t violate same-origin policy
 same origin policy is the worker needs to have a URL with the same protocol (http/https), port (something.com/something.com:81) and host (something.com/somethingelse.com)
+
+NPM
+
+Node Package Manager
+Packages (or modules) are directories with one or more files and a package.json file with some metadata
+packages are small building blocks which solve a problem
+can be code from outside your organization or you can save your own packages for reuse on other projects
+Originally built for Node Modules (server side) (ie. express, socket.io, passport, nodemailer, mysql)
+Some command line packages (ie. grunt, jshint)
+Now has client-side tools as well ()
+
+
+
+Bower
+
+it is a node module (need NPM first)
+Bower packages are git repos.
+
+Grunt
+
+front-end build tool/task runner
