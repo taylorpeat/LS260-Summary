@@ -176,6 +176,19 @@ works the same but instead of adding a state it replaces the existing state.
 
 Webworkers
 
-workers can’t access DOM object or global scope
+create a worker with `var worker = new Worker(“[scriptURL]”);
+The scriptURL is fetched and executed in the background, creating a new global environment for the worker.
+workers can’t access DOM object or global scope since they have a new global environment
+worker.postMessage(message [, transfer]) will either clone a message included and transmit it to the worker environment or pass a list of objects as the transfer argument which are transferred rather than cloned. Transferred objects are no longer available on the sender’s side.
+worker.terminate() will abort the worker environment.
+worker.onmessage = function() is similar to calling worker.addEventListener(“message”, function( ) { } );
+In order to communicate between the worker script and the main script you need to add an event listener (using onmessage or addEventListener on both ends
 two types of web workers: Dedicated workers and Shared workers
-create a worker with `var worker = new Worker(“[file name]”);
+Dedicated workers: created using the `new Worker()` constructor
+dedicated workers can only be used by the script that called it.
+Shared workers: created using the `new SharedWorker()` constructor
+shared workers can be used by multiple scripts
+shared workers are similar but must be communicated with using a port object
+before messages can be posted to the port it must be started. This is done implicitly by the onmessage function or explicitly by calling `worker.port.start()` (required if you use addEventListener instead of onmessage
+workers can’t violate same-origin policy
+same origin policy is the worker needs to have a URL with the same protocol (http/https), port (something.com/something.com:81) and host (something.com/somethingelse.com)
