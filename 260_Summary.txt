@@ -6,6 +6,7 @@ Backbone
 Window Object
 History Object
 Web Workers
+NPM
 Bower
 Grunt
 Jasmine
@@ -14,7 +15,7 @@ Jade
 Stylus
 
 
-Folder Structure
+Folder Structure fo Backbone Application
 
 bower_components
 dependencies declared in bower.json
@@ -209,7 +210,130 @@ Bower
 
 it is a node module (need NPM first)
 Bower packages are git repos.
+makes it easy to add and update dependencies
+add dependencies with `bower install [dependency name]` will fetch latest stable version and save it in the subdirectory named bower_components
+`bower install [dependency name] -S` saves dependency name into bower.json
 
 Grunt
 
 front-end build tool/task runner
+tasks are organized in a file name “Gruntfile.js”
+the file exports a function which has a grunt parameter
+module.exports = function(grunt) {…}
+The project configuration within the grunt file is done with the `initConfig` method on the `grunt` argument passed in.
+grunt.initConfig( {…} );
+the object passed into initConfig has properties which represent tasks. The property name is the task name.
+uglify: { …[uglify targets and options] }
+a task is an object which contains one or more targets and general task options (target specific options may be entered as well).
+uglify: {
+           target1: { …[target configuration] },
+                 target2: { …[target configuration] },
+         }
+grunt tasks usually perform file operations so tasks have source and destination properties for the files.
+they can be formatted:
+src: 'src/aa.js’ (for single file locations)
+dest: [‘dest/aa.js’, dest/bb.js’] (for multiple file locations)
+or with a files object using the destination as the key and src as the value:
+target1: {
+          ‘dest/aa.js': [‘src/aa.js’, ‘src/aaa.js’],
+          ‘dest/a1.js’: [‘src/aa1.js’, src/aaa1.js’],
+        }
+a task can be called in the command line by typing `grunt [task name]`.
+the task will iterate over all targets unless a target is specified (ie. `grunt uglify:target1`)
+Once the configuration object has been initialized the Grunt plugins need to be loaded. (this happens within the function being exported at the same level as grunt.initConfig)
+grunt.loadNpmTasks(‘task name’);
+Once all the tasks are loaded they can be registered for use in the command line
+grunt.registerTask(’test’, [‘jshint’, ‘qunit’])
+in the above example the string ‘test’ is what is used on the command line call. The following array is the tasks which will be run when that command is run.
+registering a task with the ‘default’ as the first argument will assign which tasks to run on a basic ‘grunt’ command in the command line.
+
+
+Jasmine
+
+Jasmine is a testing framework
+tests are included in a spec folder in the public/javascripts folder
+a Jasmine Spec Runner html file is included which includes links and scripts for several files including:
+jasmine favicon
+jasmine css stylesheet
+jasmine.js script
+jasmine-html.js script
+You need to add the coverage spec which you write.
+Structure of coverage spec file:
+Sections for testing are contained in a describe function call
+describe(‘testSectionName’, function() { …tests}
+individual tests are contained within `it` blocks
+it(“testName”, function() { …code and expectations }
+code and expectations are contained within the `it` block
+expectations are written as `expect(<valueToCompare>).<matcherMethod>(<otherValueToCompare>);
+eg. expect(foo).toEqual(2);
+examples of matcher methods include:
+toEqual(), toMatch(), toBeDefined(), toBeNull(), toBeTruthy(), toBeFalsey(), toContain(), toBeLessThan/GreaterThan(), toThrow(), toBeCloseTo()
+in addition to `it` blocks there are a few other types of blocks including:
+beforeAll, afterAll, beforeEach, afterEach
+eg. beforeAll(function() { foo = 1; })
+Spies can be set on a function and track what it does
+`spyOn(foo, ‘setBar’)`
+the above code will track the function ‘setBar’ on the object ‘foo'
+by default spies note when a function was called and stop it from executing
+alternatively you can chain a method to spyOn to allow the function to execute in various ways
+spyOn(foo, ‘setBar’).and.<chained method>
+callThrough - allows the function to run normally
+returnValue - returns a specific value instead of running the function
+callFake - supply a different function to be called instead
+throwError - throw specified value as an error
+stub - default, just stops execution
+`spyOn(foo, ‘setBar’).and.callThrough`
+the spyOn function has it’s own matcher methods including:
+toHaveBeenCalled, toHaveBeenCalledTimes, toHaveBeenCalledWith
+eg. expect(foo, ‘setBar’).toHaveBeenCalled()
+
+
+Jade
+
+templating language for HTML, code that is processed and dynamically creates html files
+allows you to write simpler code that can be compiled to one from multiple files
+also allows rendering data from the server-side into HTML, conditionals and mixins
+you can use each similar to handlebars `each item in items`
+then item will be a variable for use in the jade code
+`h2= var` uses the variable output as the heading
+`h2 var` uses the string “var” as the heading
+attributes are placed in brackets `omg(src=“images.jpg”)
+string interpolation also possible with “Hello, #{variable}”
+mixins can be included with `include _mixin.jade`
+mixin functions can be used by preceding them with a `+` symbol
+`+stylesheet_tag(‘application.css’)`
+
+
+
+
+
+Stylus
+
+templating language for CSS
+example
+
+#items
+  width: 200px
+  padding: 8px
+  ul
+    padding: 0 0 10px 0
+
+uses indents instead of curly braces
+if selector is placed indented it is equivalent to combining with the parent selector (ie. `#items ul` above)
+you can also use variables and objects
+eg. store all colours on a colour object as properties, `colour.background`
+functions are written as:
+
+button()
+  display: inline-block
+  padding: 8px 15px
+
+these functions can be called later in code as `button()` and will duplicate the code at the new location
+
+
+
+
+
+
+
+
